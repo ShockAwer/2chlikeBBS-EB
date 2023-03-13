@@ -33,9 +33,9 @@ function getCookie(key, tmp1, tmp2, xx1, xx2, xx3) {
   <table border="0" cellpadding="1" width="100%">
   <tr><td nowrap colspan="3"><font size="+1"><b><?=$SETTING['BBS_TITLE']?></b></font><br></td></tr>
   <tr><td colspan="4"><?php readfile($PATH."head.txt"); ?><br></td></tr>
-  <tr><td nowrap align="right">タイトル：</td><td><input type="text" name="subject" size="40"></td><td><input type="submit" value="新規スレッド作成" name="submit"></td></tr>
+  <tr><td nowrap align="right">Subject: </td><td><input type="text" name="subject" size="40"></td><td><input type="submit" value="Create New Thread" name="submit"></td></tr>
   <tr>
-    <td nowrap align="right">名前：</td>
+    <td nowrap align="right">Name: </td>
     <td nowrap colspan="2">
       <script type="text/javascript">
       <!--
@@ -48,7 +48,7 @@ function getCookie(key, tmp1, tmp2, xx1, xx2, xx3) {
     </td>
   </tr>
   <tr>
-    <td nowrap align="right" valign="top">内容：</td>
+    <td nowrap align="right" valign="top">Message: </td>
     <td colspan="3">
     <textarea rows="5" cols="60" wrap="off" name="MESSAGE"></textarea><br>
     <?=$file_form?>

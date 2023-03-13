@@ -10,7 +10,7 @@ foreach ($PAGEFILE as $tmp) {
 	$dat = str_replace(".dat", "", $tmp);
 	fputs($fp, "<a href=\"../test/read.php/$_REQUEST[bbs]/$dat/l50\">$count: $SUBJECT[$tmp]</a><br>\n");
 }
-fputs($fp, '<div align="right"><a href="./kako/"><b>過去ログ倉庫はこちら</b></a></font>');
+fputs($fp, '<div align="right"><a href="./kako/"><b>Click here for past log warehouse</b></a></font>');
 fputs($fp, "</body></html>\n");
 fclose($fp);
 #====================================================
@@ -61,7 +61,7 @@ foreach ($PAGEFILE as $tmp){
 	$i++;
 }
 $count_end = --$i;
-fputs($fp, "   <div align=\"right\"><a href=\"subback.html\"><b>スレッド一覧はこちら</b></a></div>\n  </td>\n </tr>\n</table><br>\n");
+fputs($fp, "   <div align=\"right\"><a href=\"subback.html\"><b>Thread list</b></a></div>\n  </td>\n </tr>\n</table><br>\n");
 #--------一覧下の広告
 #--------スレッド表示
 $i = 1;
@@ -115,14 +115,14 @@ fclose($fp);
 # i-mode用index
 $th_titles = file($subjectfile);
 $end = count($th_titles);
-$data = "<html><head><title>$_REQUEST[bbs] スレッド一覧</title></head><body>$SETTING[BBS_TITLE]<hr>";
+$data = "<html><head><title>$_REQUEST[bbs] Thread list</title></head><body>$SETTING[BBS_TITLE]<hr>";
 for ($i = 1; $i < 11; $i++) {
 	if(!isset($th_titles[$i-1]) or !$th_titles[$i-1]) break;
 	list($id, $sub) = explode("<>", $th_titles[$i-1]);
 	$id = str_replace(".dat", "", $id);
 	$data .= $i.": <a href=../../test/r.php/$_REQUEST[bbs]/$id/>".rtrim($sub).'</a><br>';
 }
-$data .= "<hr><a href=../../test/p.php/$_REQUEST[bbs]/$i>続き</a> <a href=../../test/b.php/$_REQUEST[bbs]/>新ｽﾚ</a></body></html>\n";
+$data .= "<hr><a href=../../test/p.php/$_REQUEST[bbs]/$i>Continue</a> <a href=../../test/b.php/$_REQUEST[bbs]/>New Thread</a></body></html>\n";
 $fp = fopen ($IMODEFILE, "w");
 fputs($fp, $data);
 fclose($fp);
@@ -138,14 +138,14 @@ header("Content-Type: text/html; charset=UTF-8");
 ?>
 <html>
 <head>
-<title>書きこみました。</title>
+<title>I wrote it.</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <?=$set_cookie?>
 <meta http-equiv="refresh" content="1;URL=<?=$INDEXFILE?>?">
 </head>
-<body>書きこみが終わりました。<br>
+<body>Successfully wrote.<br>
 <br>
-画面を切り替えるまでしばらくお待ち下さい。<br>
+Wait until redirceted....<br>
 <br><br><br>
 </body>
 </html>

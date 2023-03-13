@@ -70,7 +70,7 @@ function MakeWorkFile($bbs, $key, $outdat="") {
 	if ($mail) $mailto = "<a href=\"mailto:$mail \"><b>$name </b></a>";
 	else $mailto = "<font color=\"$SETTING[BBS_NAME_COLOR]\"><b>$name </b></font>";
 	#１つ目の要素を吐き出す
-	$logall .= " <dt>1 名前：$mailto $date<dd>$message <br><br><br>\n";
+	$logall .= " <dt>1 Name: $mailto $date<dd>$message <br><br><br>\n";
 	#残りのログを表示する
 	foreach ($logopen as $tmp){
 		#要素を加工する
@@ -82,7 +82,7 @@ function MakeWorkFile($bbs, $key, $outdat="") {
 		if ($mail) $mailto = "<a href=\"mailto:$mail \"><b>$name </b></a>";
 		else $mailto = "<font color=\"$SETTING[BBS_NAME_COLOR]\"><b>$name </b></font>";
 		#要素を吐き出す
-		$logall .= " <dt>$topnum 名前：$mailto ：$date<dd>";
+		$logall .= " <dt>$topnum Name: $mailto ：$date<dd>";
 		// 0thelloスレッドは全部表示
 		if ($GLOBALS['vip'][8]) $logall .= $message;
 		else {

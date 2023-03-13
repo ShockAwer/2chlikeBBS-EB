@@ -15,8 +15,9 @@ if (!empty($_SERVER['PATH_INFO'])) {
 	$key = $pairs[2];
 }
 if (!file_exists("../$bbs/dat/$key.dat")) {
-	if (file_exists("../$bbs/kako/$key.html")) echo"過去ﾛｸﾞ倉庫です。<BR>携帯では見られません。";
-	else echo("ｽﾚｯﾄﾞが見つかりません。");
+	if (file_exists("../$bbs/kako/$key.html")) echo"
+It is a past log warehouse. <BR>You can't see it on your phone.";
+	else echo("Thread not found");
 	exit;
 }
 $log = file("../$bbs/dat/$key.dat");
@@ -62,14 +63,14 @@ if ($to > $linenum) $to = $linenum;
 list(,,,,$subject) = explode("<>",$log[0]);
 $subject = chop($subject);
 list(,,$tmp) = explode("<>", $log[$linenum-1]);
-if (preg_match("/Over 1000 Thread|ストッパ|停止/", $tmp)) $stop = 1;
+if (preg_match("/Over 1000 Thread|Stopper|Stop/", $tmp)) $stop = 1;
 if ($st > 1) {
 	$i = $st - 1;
-	$link = "<a href=-".$i.">前</a> ";
+	$link = "<a href=-".$i.">Previous</a> ";
 }
 else $link = '';
 ?>
-<html><head><title><?=$subject?></title></head><body><hr><?=$link?><a href=<?=$to+1?>->次</a> <a href=n>新10</a> <a href=1->1-</a> <a href=../../../../<?=$bbs?>/i/>板</a> <a href=w>ｶｷｺﾐ</a><hr><?php
+<html><head><title><?=$subject?></title></head><body><hr><?=$link?><a href=<?=$to+1?>->Next</a> <a href=n>Latest 10</a> <a href=1->1-</a> <a href=../../../../<?=$bbs?>/i/>Return to board</a> <a href=w>Reply</a><hr><?php
 if ($nofirst != "true" or $st == 1 or strstr($pairs[3], "w")) {
 	if ($st == 1) {$st++;}
 	chop($log[0]);
@@ -77,8 +78,8 @@ if ($nofirst != "true" or $st == 1 or strstr($pairs[3], "w")) {
 	$name = str_replace(array("<b>","</b>"), "", $name);
 	if (!$message) {
 		$name='';
-		$time='[ここ壊れてます]';
-		$message='[ここ壊れてます]';
+		$time='[???]';
+		$message='[???]';
 	}
 	$message = preg_replace("/(https?):\/\/(www\d*\.|)([\da-zA-Z\-\.]{1,10})([\x21-\x7E]*|)/i","<a href=$1://$2$3$4>$3</a>",$message);
 	$read = str_replace("r.php", "read.php", $_SERVER['SCRIPT_NAME']);
@@ -88,13 +89,13 @@ if ($nofirst != "true" or $st == 1 or strstr($pairs[3], "w")) {
 	$msgline = substr_count($message, "<br>") + 1;
 	if ($msgline > 6 and $to != 1) {
 		preg_match("/(.*) <br>.*/U", $message, $match);
-		$message = $match[1]."<a href=1><br> 省".$msgline."</a>";
+		$message = $match[1]."<a href=1><br> Next".$msgline."</a>";
 	}
 	echo $subject."[1]$name $time<br>$message<hr>";
 }
 if (strstr($pairs[3], "w")) {
 	?>
-<form method=post action=../../../bbs.php>NAME：<input name=FROM>MAIL：<input name=mail istyle=3><input type=hidden name=bbs value=<?=$bbs?>><input type=hidden name=key value=<?=$key?>><input type=hidden name=time value=<?=time()?>><textarea name=MESSAGE></textarea><input type=submit value="かきこむ" name=submit></form><br><?=$version?></body><?php
+<form method=post action=../../../bbs.php>NAME：<input name=FROM>MAIL：<input name=mail istyle=3><input type=hidden name=bbs value=<?=$bbs?>><input type=hidden name=key value=<?=$key?>><input type=hidden name=time value=<?=time()?>><textarea name=MESSAGE></textarea><input type=submit value="Post!" name=submit></form><br><?=$version?></body><?php
 	exit;
 }
 for ($s = $st; $s <= $to; $s++){
@@ -103,8 +104,8 @@ for ($s = $st; $s <= $to; $s++){
 	$name = str_replace(array("<b>","</b>"), "", $name);
 	if (!$message) {
 		$name='';
-		$time='[ここ壊れてます]';
-		$message='[ここ壊れてます]';
+		$time='[???]';
+		$message='[???]';
 	}
 	$message = preg_replace("/(https?):\/\/(www\d*\.|)([\da-zA-Z\-\.]{1,10})([\x21-\x7E]*|)/i","<a href=$1://$2$3$4>$3</a>",$message);
 	$read = str_replace("r.php", "read.php", $_SERVER['SCRIPT_NAME']);
@@ -114,10 +115,10 @@ for ($s = $st; $s <= $to; $s++){
 	$msgline = substr_count($message, "<br>") + 1;
 	if ($msgline > 6 and $st != $to) {
 		preg_match("/(.*) <br>.*/U", $message, $match);
-		$message = $match[1]."<a href=".$s."><br> 省".$msgline."</a>";
+		$message = $match[1]."<a href=".$s."><br> Ministry".$msgline."</a>";
 	}
 	print "[$s]$name $time<br>$message<hr>";
 }
 echo $link;
 ?>
-<a href=<?=$to+1?>->次</a> <a href=w>ｶｷｺﾐ</a><hr><?=$version?></body></html>
+<a href=<?=$to+1?>->Next</a> <a href=w>Reply</a><hr><?=$version?></body></html>

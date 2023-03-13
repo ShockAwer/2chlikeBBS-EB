@@ -3,6 +3,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Cache-Control" content="no-cache">
+<style>
+@font-face {
+  font-family: "IPAMonaPGothic";
+  src: local("IPAMonaPGothic"),
+    url("../IPAMonaPGothic.woff2") format("woff2"),
+    url("../IPAMonaPGothic.woff") format("woff");
+}
+</style>
 <script type="text/javascript"><!--
 function l(e){
  var N=getCookie("NAME"),M=getCookie("MAIL"),i;
@@ -57,18 +65,18 @@ img {border:0;}
    <form method="post" action="../test/bbs.php">
    <input type="hidden" name="bbs" value="<BBS>">
    <input type="hidden" name="new" value="thread">
-   <input type="submit" value="新規スレッド作成画面へ" name="submit">
+   <input type="submit" value="New Thread" name="submit">
    </form>
   </td>
  </tr>
 </table>
 <center><br><br>
-<b>どのような形の削除依頼であれ公開させていただきます。</b>
+<b>Any form of removal request will be made public.</b>
 </center>
 <br>
-<a href="../../"><b>ホーム</b></a><VERSION>
+<a href="../../"><b>Home</b></a> <VERSION>
 <address>
-<div align="right"><a href="http://script.s16.xrea.com" target="_blank"><small>鏡の国</small></a> + <a href="https://cappuccino1204.ml" target="_blank"><small>Roi0410</small></a></div>
+<div align="right"><a href="http://script.s16.xrea.com" target="_blank"><small>Mirror Country</small></a> + <a href="http://geocities.club/SiliconValley/Vista/5904/" target="_blank"><small>jr</small></a></div>
 </address>
 </body>
 </html>

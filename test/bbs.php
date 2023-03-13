@@ -29,7 +29,7 @@ if (!isset($_POST['MESSAGE'])) $_POST['MESSAGE'] = '';
 #　初期情報の取得（設定ファイル）
 #====================================================
 #設定ファイルを読む
-$set_file = $PATH . "SETTING.TXT";
+$set_file = $PATH . "/SETTING.TXT";
 if (is_file($set_file)) {
 	$set_str = file($set_file);
 	foreach ($set_str as $tmp){
@@ -39,12 +39,12 @@ if (is_file($set_file)) {
 	}
 }
 #設定ファイルがない（ERROR)
-else DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：ユーザー設定が消失しています！$PATH");
+else DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：Your user settings have been lost! $PATH");
 require $PATH.'config.php';
 #====================================================
 #　入力情報を取得（ＰＯＳＴ）
 #====================================================
-if ($_SERVER['REQUEST_METHOD'] != 'POST') DispError ("ＥＲＲＯＲ！","ＥＲＲＯＲ：不正な投稿です！");
+if ($_SERVER['REQUEST_METHOD'] != 'POST') DispError ("ＥＲＲＯＲ！","ＥＲＲＯＲ：Invalid post");
 if (get_magic_quotes_gpc()) $_POST = array_map("stripslashes", $_POST);
 $_POST['subject'] = str_replace('"', "&quot;", $_POST['subject']);
 $_POST['subject'] = str_replace("<", "&lt;", $_POST['subject']);
@@ -103,27 +103,27 @@ if ($PROXY) {
 #==================================================
 # 不正ＰＲＯＸＹ使用ですか、、、？
 # プロキシ制限の実施
-/**** 2ch BBQ
-if(gethostbyname(join('.',array_reverse(explode( ".", $_SERVER['REMOTE_ADDR'])).'.niku.2ch.net') == "127.0.0.2") {
+/**** 6ch BBQ
+if(gethostbyname(join('.',array_reverse(explode( ".", $_SERVER['REMOTE_ADDR'])).'.niku.6ch.net') == "127.0.0.2") {
 	$PROXY = $_SERVER['REMOTE_ADDR'];
 }
 #*******/
 if ($PROXY and ($SETTING['BBS_PROXY_CHECK'] == "checked")) {
-	DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：ＰＲＯＸＹ規制中！");
+	DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：Under PROXY regulation!");
 }
 if ($SETTING['BBS_OVERSEA_PROXY'] == "checked" and !preg_match("/\.jp</i", $HOST)) {
-	DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：ＰＲＯＸＹ規制中！");
+	DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：Under PROXY regulation!");
 }
-if ($SETTING['BBS_OVERSEA_THREAD'] == "checked" and $_POST['subject'] and !preg_match("/\.jp$/i", $HOST) and !preg_match("/\.bbtec\.net$/", $HOST)) {
-	DispError("ＥＲＲＯＲ！","jpドメインからスレッド立ててください");
+if ($SETTING['BBS_OVERSEA_THREAD'] == "checked" and $_POST['subject'] and preg_match("/\.jp$/i", $HOST) and !preg_match("/\.bbtec\.net$/", $HOST)) {
+	DispError("ＥＲＲＯＲ！","Not Japanese.");
 }
 #-------------------------------アクセス拒否リスト
 if (is_file($PATH."uerror.cgi")){
 	$IN = file($PATH."uerror.cgi");
 	foreach ($IN as $tmp){
 		$tmp = trim($tmp);
-		if (stristr($HOST, $tmp)) DispError("ＥＲＲＯＲ！","ユーザー設定が異常です！");
-		if (stristr($_SERVER['REMOTE_ADDR'], $tmp)) DispError("ＥＲＲＯＲ！","ユーザー設定が異常です！");
+		if (stristr($HOST, $tmp)) DispError("ＥＲＲＯＲ！","Abnormal user settings!");
+		if (stristr($_SERVER['REMOTE_ADDR'], $tmp)) DispError("ＥＲＲＯＲ！","Abnormal user settings!");
 	}
 }
 #====================================================
@@ -174,34 +174,35 @@ if ($_POST['subject']) {
 }
 elseif ($_POST['key']) {
 	#キーが数字じゃない場合ばいばい！
-	if (preg_match("/\D/", $_POST['key'])) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：キー情報が不正です！");
+	if (preg_match("/\D/", $_POST['key'])) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：
+Invalid key information!");
 	#.datファイルの設定
 	$DATAFILE = $DATPATH.$_POST['key'].".dat";
 	#.datが存在してないか書けないならばいばい
-	if (!is_writable($DATAFILE)) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：このスレッドには書けません！");
+	if (!is_writable($DATAFILE)) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：You can't post in this thread!");
 	#.datのサイズが大きすぎる時はばいばい
-	if (filesize($DATAFILE) > THREAD_BYTES) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：このスレッドは ".(int)(THREAD_BYTES/1024)."k を超えているので書けません！");
+	if (filesize($DATAFILE) > THREAD_BYTES) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：This thread is ".(int)(THREAD_BYTES/1024)."! Too big!");
 	# レスの総数を画像用カウンタに
 	$fp = fopen($DATAFILE, "r");
 	while ($tmp = fgets($fp)) $imgnum++;
 	fclose($fp);
 }
 #サブジェクトもキーも存在しないならばいばい
-else DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：サブジェクトが存在しません！");
+else DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：Subject does not exist!");
 #====================================================
 #　フィールドサイズの判定
 #====================================================
-if (strlen($_POST['MESSAGE']) == 0) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：本文がありません！");
-if (strlen($_POST['mail']) > $SETTING['BBS_MAIL_COUNT']) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：メールアドレスが長すぎます！");
+if (strlen($_POST['MESSAGE']) == 0) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：No text！");
+if (strlen($_POST['mail']) > $SETTING['BBS_MAIL_COUNT']) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：Your e-mail is too long！");
 $msg = explode("<br>", $_POST['MESSAGE']);
-if (count($msg) > 50) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：改行が多すぎます！");
+if (count($msg) > 50) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：Too many line breaks！");
 foreach ($msg as $tmp) {
-	if (strlen($tmp) > 256) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：長すぎる行があります！");
+	if (strlen($tmp) > 256) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：Too long！");
 }
-if (strlen($_POST['MESSAGE']) > $SETTING['BBS_MESSAGE_COUNT']) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：本文が長すぎます！");
-if (preg_match_all("/&gt;&gt;[0-9]/", $_POST['MESSAGE'], $matches) > 16) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：レスアンカーリンクが多すぎます！");
-if (strlen($_POST['FROM']) > $SETTING['BBS_NAME_COUNT']) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：名前が長すぎます！");
-if (strlen($_POST['subject']) > $SETTING['BBS_SUBJECT_COUNT']) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：サブジェクトが長すぎます！");
+if (strlen($_POST['MESSAGE']) > $SETTING['BBS_MESSAGE_COUNT']) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：The main text is too long！");
+if (preg_match_all("/&gt;&gt;[0-9]/", $_POST['MESSAGE'], $matches) > 16) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：Too many links！");
+if (strlen($_POST['FROM']) > $SETTING['BBS_NAME_COUNT']) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：Your name is too long！");
+if (strlen($_POST['subject']) > $SETTING['BBS_SUBJECT_COUNT']) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：Title too long！");
 #====================================================
 #　書き込み情報のチェック＆補完
 #====================================================
@@ -212,7 +213,7 @@ if (!isset($_SERVER['HTTP_REFERER']) or !$_SERVER['HTTP_REFERER']){
 	if (!strstr($_SERVER['HTTP_USER_AGENT'], 'DoCoMo') and
 	!strstr($_SERVER['HTTP_USER_AGENT'], 'J-PHONE') and
 	!strstr($_SERVER['HTTP_USER_AGENT'], 'UP.Browser'))
-	DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：リファラぐらい送ってちょ。");
+	DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：Send me a referrer.");
 }
 /*
 else {
@@ -227,12 +228,8 @@ else {
 #====================================================
 #　エラーレスポンス（普通のエラーはまとめてばいばい）
 #====================================================
-#ＰＯＳＴ情報
-if ($_POST['submit'] != "書き込む" and $_POST['submit'] != "新規スレッド作成" and $_POST['submit'] != "かきこむ" and $_POST['submit'] != "上記全てを承諾して書き込む") {
-	DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：ユーザー設定が消失しています！");
-}
 #時間が読み込めなかったらばいばい
-if (!$_POST['time']) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：フォーム情報が不正です！");
+if (!$_POST['time']) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：Invalid form information！");
 #==================================================
 #　スレッド立てすぎチェック
 #==================================================
@@ -245,7 +242,7 @@ if ($_POST['subject'] and $SETTING['BBS_THREAD_TATESUGI'] >= 2) {
 		foreach ($IP as $tmp) {
 			$tmp = rtrim($tmp);
 			# 記録ファイル内に同一ホストがあればエラー。
-			if ($HOST == $tmp) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：スレッド立てすぎです。。。");
+			if ($HOST == $tmp) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：Too many threads. . .");
 		}
 	}
 	array_unshift($IP, "$HOST\n");
@@ -278,14 +275,14 @@ if ($SETTING['timecount'] >= 2) {
 			list($time1,$host1) = explode("<>", $tmp);
 			if ($HOST == $host1) {
 				# 同じ投稿フォームからの場合は2重カキコとしてエラー
-				if ($_POST['time'] == $time1) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：２重カキコですか？？");
+				if ($_POST['time'] == $time1) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：Are you a double kakiko? ?");
 				# ホスト名が同じ投稿の数をカウント
 				$count++;
 			}
 		}
 	}
 	# timecount 個の投稿内にtimeclose 個以上の投稿があればエラー
-	if ($count >= $SETTING['timeclose']) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：連続投稿ですか？？");
+	if ($count >= $SETTING['timeclose']) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：Are you spamming?");
 	array_unshift($IP, "$_POST[time]<>$HOST\n");
 	# 記録ファイル内のホスト数を timecount 個以内に調整して保存
 	while (count($IP) > $SETTING['timecount']) array_pop($IP);
@@ -338,7 +335,7 @@ if (preg_match("/([^\#]*)\#(.+)/", $_POST['mail'], $cap)) {
 $sage = 0;
 $stars = 0;
 @include 'bbs2.php';
-if ($stars and !strpos($_POST['FROM'], '★')) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：キャップがないとレスできません。。。");
+if ($stars and !strpos($_POST['FROM'], '★')) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：You can't race without a cap. . .");
 # 日付欄にIDを加える
 $DATE_ID = $DATE;
 # 'BBS_NO_ID', 'NANASHI_CHECK', 'BBS_NONAME_NAME' は"bbs2.php"で変更されている可能性あり
@@ -347,8 +344,8 @@ if ($SETTING['BBS_NO_ID'] != "checked") $DATE_ID .= $ID;
 if ($SETTING['BBS_DISP_IP'] == "checked") $DATE_ID .=" <font size=1>[ $HOST ]</font>";
 # fusianasanでホスト表示
 $_POST['FROM'] = str_replace("fusianasan", " </b>$HOST<b>", $_POST['FROM']);
-# 名前入力チェックと補完
-if ($SETTING['NANASHI_CHECK'] and !$_POST['FROM']) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：名前いれてちょ。。。");
+# Name入力チェックと補完
+if ($SETTING['NANASHI_CHECK'] and !$_POST['FROM']) DispError("ＥＲＲＯＲ！","ＥＲＲＯＲ：Enter your name. . .");
 if (!$_POST['FROM']) $_POST['FROM'] = $SETTING['BBS_NONAME_NAME'];
 #====================================================
 #　レスポンスアンカー（本文）
@@ -479,14 +476,14 @@ function DispError($title, $topic = "") {
 		$msg = str_replace (" <br> ", "\n", $msg);
 		$msg = str_replace (" ", "\x1F", $msg);
 		?>
-<html><!-- 2ch_X:cookie --><head><title>■ 書き込み確認 ■</title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body bgcolor="#EEEEEE">
-<font size="+1" color="#FF0000"><b>書きこみ＆クッキー確認</b></font><ul><br><br><b><?=$_POST['subject']?> </b><br>名前：<?=$_POST['FROM']?> <br>E-mail：<?=$_POST['mail']?> <br>内容：<br><?=$_POST['MESSAGE']?><br><br></ul>
+<html><!-- 6ch_X:cookie --><head><title>■ Post confirmation ■</title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body bgcolor="#EEEEEE">
+<font size="+1" color="#FF0000"><b>Write & cookie confirmation</b></font><ul><br><br><b><?=$_POST['subject']?> </b><br>Name：<?=$_POST['FROM']?> <br>E-mail：<?=$_POST['mail']?> <br>Content：<br><?=$_POST['MESSAGE']?><br><br></ul>
 <b>
 <?=$title?><br>
-・投稿者は、投稿に関して発生する責任が全て投稿者に帰すことを承諾します。<br>
-・投稿者は、話題と無関係な広告の投稿に関して、相応の費用を支払うことを承諾します<br>
-・投稿者は、投稿された内容について、掲示板運営者がコピー、保存、引用、転載等の利用することを許諾します。また、掲示板運営者に対して、著作者人格権を一切行使しないことを承諾します。<br>
-・投稿者は、掲示板運営者が指定する第三者に対して、著作物の利用許諾を一切しないことを承諾します。
+・The contributor agrees that all responsibility arising from the contribution shall be attributed to the contributor. <br>
+- Contributors agree to pay a reasonable fee for posting advertisements unrelated to the topic<br>
+・The poster authorizes the bulletin board operator to copy, save, quote, and reprint the posted content. In addition, I agree not to exercise any moral rights of the author against the bulletin board operator. <br>
+・The contributor agrees not to grant any license to use the copyrighted material to a third party designated by the bulletin board operator。
 <br>
 
 </b>
@@ -502,14 +499,14 @@ function DispError($title, $topic = "") {
 <br>
 <?
 if (isset($_FILES['file']['name']) and $_FILES['file']['name']) {
-	echo "もう一度ファイルの指定を行ってください。<br>\n";
+	echo "Please specify the file again.<br>\n";
 	echo '<input type="file" name="file" size="50"><br>';
 }
 ?>
-<input type="submit" value="上記全てを承諾して書き込む" name="submit"><br>
+<input type="submit" value="I agree to all of the above." name="submit"><br>
 </form>
-変更する場合は戻るボタンで戻って書き直して下さい。<br><br>
-<font size="-1">(cookieを設定するとこの画面はでなくなります。)</font><br>
+If you want to change it, please go back with the back button and rewrite it.<br><br>
+<font size="-1">(This screen disappears when cookies are set.)</font><br>
 </body></html>
 <?
 	}
@@ -518,8 +515,8 @@ if (isset($_FILES['file']['name']) and $_FILES['file']['name']) {
 		?>
 <html><head><title><?=$title?></title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body bgcolor="#FFFFFF">
 <font size="+1" color="#FF0000"><b><?=$topic?></b></font>
-<ul><br>ホスト<b><?=$HOST?></b><br><b><?=$_POST['subject']?> </b><br>名前： <?=$_POST['FROM']?><br>E-mail：<?=$_POST['mail']?> <br>内容：<br><?=$_POST['MESSAGE']?><br><br></ul>
-<center>こちらでリロードしてください。<a href="../<?=$_POST['bbs']?>/"> GO! </a></center></body></html>
+<ul><br>IP HOST:<b><?=$HOST?></b><br><b><?=$_POST['subject']?> </b><br>Name： <?=$_POST['FROM']?><br>E-mail：<?=$_POST['mail']?> <br>Content：<br><?=$_POST['MESSAGE']?><br><br></ul>
+<center>RELOAD!<a href="../<?=$_POST['bbs']?>/"> GO! </a></center></body></html>
 <?
 	}
 	exit();
